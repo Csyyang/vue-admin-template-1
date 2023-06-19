@@ -48,11 +48,24 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/order',
+    children: [
+      {
+        path: 'order',
+        name: 'Order',
+        component: () => import('@/views/order/index'),
+        meta: { title: '订单', icon: 'form' }
+
+      }
+    ]
+  },
+
+  {
+    path: '/dashboard',
+    component: Layout,
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
