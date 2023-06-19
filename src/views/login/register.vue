@@ -10,7 +10,7 @@
     >
 
       <div class="title-container">
-        <h3 class="title">登 录</h3>
+        <h3 class="title">注册</h3>
       </div>
 
       <el-form-item prop="username">
@@ -20,8 +20,8 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          placeholder="请输入用户名"
+          name="用户名"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -37,8 +37,8 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
-          name="password"
+          placeholder="请输入密码"
+          name="密码"
           tabindex="2"
           auto-complete="on"
           @keyup.enter.native="handleLogin"
@@ -53,11 +53,7 @@
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
-      >Login</el-button>
-
-      <div class="tips">
-        <el-button type="primary" plain @click="$router.push('/register')">注册</el-button>
-      </div>
+      >提交</el-button>
 
     </el-form>
   </div>
@@ -65,14 +61,15 @@
 
 <script>
 // import { validUsername } from '@/utils/validate'
+import { register } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
     return {
       loginForm: {
-        username: '222',
-        password: '222'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '请输入用户名' }],
@@ -105,12 +102,21 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
+          // this.loading = true
+          // this.$store.dispatch('user/login', this.loginForm).then(() => {
+          //   this.$router.push({ path: this.redirect || '/' })
+          //   this.loading = false
+          // }).catch(() => {
+          //   this.loading = false
+          // })
+
+          register(this.loginForm).then(res => {
+            this.$message({
+              message: '注册成功',
+              type: 'success'
+            })
+
+            this.$router.push('/login')
           })
         } else {
           console.log('error submit!!')
@@ -232,3 +238,4 @@ $light_gray: #eee;
   }
 }
 </style>
+
