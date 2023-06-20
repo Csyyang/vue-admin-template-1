@@ -9,23 +9,45 @@
             <el-radio-button label="year">按年查看</el-radio-button>
           </el-radio-group>
 
-          <el-date-picker v-if="radio1 !== 'all'" v-model="value2" :type="radio1" value-format="timestamp" placeholder="选择月" @input="getData" />
+          <el-date-picker
+            v-if="radio1 !== 'all'"
+            v-model="value2"
+            :type="radio1"
+            value-format="timestamp"
+            placeholder="选择月"
+            @input="getData"
+          />
         </div>
 
         <el-button type="primary" @click="openDialog">新增</el-button>
       </div>
     </div>
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
-      <el-table-column fixed prop="order" label="订单id" />
+      <!-- <el-table-column fixed prop="order" label="订单id" /> -->
       <el-table-column prop="machineNo" label="机器编号" />
-      <el-table-column prop="location" label="地理位置" width="120" />
-      <el-table-column prop="consumptionAmount" label="消费金额（元）" width="120" />
-      <el-table-column prop="divideIntoRanks" label="分成比列（%）" width="120" />
-      <el-table-column prop="createData" label="日期">
+      <el-table-column prop="location" label="地理位置" />
+      <el-table-column prop="consumptionAmount" label="消费金额（元）">
+        <template slot-scope="scope">
+          {{ outputmoney(scope.row.consumptionAmount) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="divideIntoRanks" label="分成比列（%）">
+        <template slot-scope="scope">
+          {{ scope.row.divideIntoRanks }}%
+        </template>
+      </el-table-column>
+      <el-table-column label="金额（元）">
+        <template slot-scope="scope">
+          {{ outputmoney(currency(scope.row.consumptionAmount).multiply(scope.row.divideIntoRanks).divide(100)) }}
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column prop="createData" label="日期">
         <template slot-scope="scope">
           {{ new Date(scope.row.createData).toLocaleDateString() }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="deleteItem(scope.row)">删除</el-button>
@@ -75,10 +97,12 @@
 
 <script>
 import { getList, addList, deleteData } from '@/api/order'
+import currency from 'currency.js'
 
 export default {
   data() {
     return {
+      currency,
       radio1: 'all',
       value2: '',
       tableData: [],
@@ -106,6 +130,29 @@ export default {
     this.getData()
   },
   methods: {
+    // 金额 格式化
+    outputmoney(value) {
+      if (!value && value !== 0) return '-'
+      var intPart = Number(value) | 0 // 获取整数部分
+      var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') // 将整数部分逢三一断
+
+      var floatPart = '.00' // 预定义小数部分
+      var value2Array = value.toString().split('.')
+
+      // =2表示数据有小数位
+      if (value2Array.length === 2) {
+        floatPart = value2Array[1].toString() // 拿到小数部分
+
+        if (floatPart.length === 1) { // 补0,实际上用不着
+          return intPartFormat + '.' + floatPart + '0'
+        } else {
+          return intPartFormat + '.' + floatPart
+        }
+      } else {
+        return intPartFormat + floatPart
+      }
+    },
+
     getData() {
       this.loading = true
       getList({
