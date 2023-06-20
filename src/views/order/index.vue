@@ -1,17 +1,19 @@
 <template>
   <div class="order">
-    <div class="header">
-      <div class="left-box">
-        <el-radio-group v-model="radio1" @input="changInput">
-          <el-radio-button label="all">所有</el-radio-button>
-          <el-radio-button label="month">按月查看</el-radio-button>
-          <el-radio-button label="year">按年查看</el-radio-button>
-        </el-radio-group>
+    <div>
+      <div class="header-box">
+        <div class="left-box">
+          <el-radio-group v-model="radio1" @input="changInput">
+            <el-radio-button label="all">所有</el-radio-button>
+            <el-radio-button label="month">按月查看</el-radio-button>
+            <el-radio-button label="year">按年查看</el-radio-button>
+          </el-radio-group>
 
-        <el-date-picker v-if="radio1 !== 'all'" v-model="value2" :type="radio1" value-format="timestamp" placeholder="选择月" @input="getData" />
+          <el-date-picker v-if="radio1 !== 'all'" v-model="value2" :type="radio1" value-format="timestamp" placeholder="选择月" @input="getData" />
+        </div>
+
+        <el-button type="primary" @click="openDialog">新增</el-button>
       </div>
-
-      <el-button type="primary" @click="openDialog">新增</el-button>
     </div>
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column fixed prop="order" label="订单id" />
@@ -167,11 +169,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .order {
   padding: 15px;
 
-  .header {
+  .header-box {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
