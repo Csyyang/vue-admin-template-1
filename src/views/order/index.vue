@@ -66,9 +66,9 @@
         label-position="left"
       >
 
-        <el-form-item label="订单id" prop="order">
+        <!-- <el-form-item label="订单id" prop="order">
           <el-input v-model="orderForm.order" />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="机器编号" prop="machineNo">
           <el-input v-model="orderForm.machineNo" />
