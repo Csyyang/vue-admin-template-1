@@ -14,7 +14,7 @@
             v-model="value2"
             :type="radio1"
             value-format="timestamp"
-            placeholder="选择月"
+            placeholder="请选择"
             @input="getData"
           />
         </div>
