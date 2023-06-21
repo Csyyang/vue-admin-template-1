@@ -9,9 +9,9 @@
       label-position="left"
     >
 
-      <div class="title-container">
+      <!-- <div class="title-container">
         <h3 class="title">注册</h3>
-      </div>
+      </div> -->
 
       <el-form-item prop="username">
         <span class="svg-container">
@@ -48,12 +48,12 @@
         </span>
       </el-form-item>
 
-      <el-button
+      <!-- <el-button
         :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
-      >提交</el-button>
+      >提交</el-button> -->
 
     </el-form>
   </div>
@@ -100,8 +100,9 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
+      return new Promise((resolve, reject) => {
+        this.$refs.loginForm.validate(valid => {
+          if (valid) {
           // this.loading = true
           // this.$store.dispatch('user/login', this.loginForm).then(() => {
           //   this.$router.push({ path: this.redirect || '/' })
@@ -110,18 +111,18 @@ export default {
           //   this.loading = false
           // })
 
-          register(this.loginForm).then(res => {
-            this.$message({
-              message: '注册成功',
-              type: 'success'
+            register(this.loginForm).then(res => {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
             })
-
-            this.$router.push('/login')
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
+            resolve(true)
+          } else {
+            console.log('error submit!!')
+            resolve(false)
+          }
+        })
       })
     }
   }
@@ -132,7 +133,7 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg: #283443;
+$bg: #fff;
 $light_gray: #fff;
 $cursor: #fff;
 
@@ -176,21 +177,21 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #fff;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  background-color: #fff !important;
   overflow: hidden;
 
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    // padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }

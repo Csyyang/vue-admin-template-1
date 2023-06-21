@@ -26,6 +26,7 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
           <el-dropdown-item @click.native="open">修改密码</el-dropdown-item>
+          <el-dropdown-item @click.native="openAddUser">添加用户</el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -68,6 +69,14 @@
           <el-button :loading="loading" type="primary" @click.native.prevent="handleLogin">确 定</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog key="register" title="添加用户" :visible.sync="dialogUserFormVisible">
+        <register ref="register" />
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogUserFormVisible = false">取 消</el-button>
+          <el-button :loading="loading" type="primary" @click.native.prevent="handleUserLogin">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -77,15 +86,18 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { modify } from '@/api/user'
+import register from '@/views/login/register.vue'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    register
   },
   data() {
     return {
       dialogFormVisible: false,
+      dialogUserFormVisible: false,
       loginForm: {
         password: ''
       },
@@ -117,6 +129,9 @@ export default {
     open() {
       this.dialogFormVisible = true
     },
+    openAddUser() {
+      this.dialogUserFormVisible = true
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -134,6 +149,13 @@ export default {
         } else {
           console.log('error submit!!')
           return false
+        }
+      })
+    },
+    handleUserLogin() {
+      this.$refs.register.handleLogin().then(res => {
+        if (res) {
+          this.dialogUserFormVisible = false
         }
       })
     },

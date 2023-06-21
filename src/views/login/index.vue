@@ -8,7 +8,10 @@
       auto-complete="on"
       label-position="left"
     >
+      <div style="margin-bottom: 12px;">
+        <el-image :src="require('@/assets/WechatIMG38.png')" fit="fit" />
 
+      </div>
       <div class="title-container">
         <h3 class="title">登 录</h3>
       </div>
@@ -55,9 +58,9 @@
         @click.native.prevent="handleLogin"
       >Login</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <el-button type="primary" plain @click="$router.push('/register')">注册</el-button>
-      </div>
+      </div> -->
 
     </el-form>
   </div>
@@ -126,9 +129,9 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg: #283443;
-$light_gray: #fff;
-$cursor: #fff;
+$bg: #fff;
+$light_gray: #283443;
+$cursor: #283443;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -149,7 +152,7 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: $cursor;
       height: 47px;
       caret-color: $cursor;
 
@@ -170,9 +173,9 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
-$dark_gray: #889aa4;
-$light_gray: #eee;
+$bg: #fff;
+$dark_gray: #283443;
+$light_gray: #283443;
 
 .login-container {
   min-height: 100%;
