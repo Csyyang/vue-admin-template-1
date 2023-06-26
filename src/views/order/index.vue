@@ -3,7 +3,7 @@
     <div>
       <div class="header-box">
         <div class="left-box">
-          <el-radio-group v-model="radio1" @input="changInput">
+          <el-radio-group style="width:200px" v-model="radio1" @input="changInput">
             <el-radio-button label="all">所有</el-radio-button>
             <el-radio-button label="month">按月查看</el-radio-button>
             <!-- <el-radio-button label="year">按年查看</el-radio-button> -->
@@ -32,7 +32,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="divideIntoRanks" label="分成比列（%）">
+      <el-table-column prop="divideIntoRanks" label="分成比例（%）">
         <template slot-scope="scope">
           {{ scope.row.divideIntoRanks }}%
         </template>
@@ -83,7 +83,7 @@
           <el-input v-model="orderForm.consumptionAmount" />
         </el-form-item>
 
-        <el-form-item label="分成比列（%）" prop="divideIntoRanks">
+        <el-form-item label="分成比例（%）" prop="divideIntoRanks">
           <el-input v-model="orderForm.divideIntoRanks" />
         </el-form-item>
 
@@ -125,7 +125,7 @@
           <el-input v-model="orderFormEdit.consumptionAmount" />
         </el-form-item>
 
-        <el-form-item label="分成比列（%）" prop="divideIntoRanks">
+        <el-form-item label="分成比例（%）" prop="divideIntoRanks">
           <el-input v-model="orderFormEdit.divideIntoRanks" />
         </el-form-item>
 
@@ -180,7 +180,7 @@ export default {
         machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
         location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
         consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
-        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比列' }],
+        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比例' }],
         createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
       },
       orderRulesEdit: {
@@ -188,7 +188,7 @@ export default {
         machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
         location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
         consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
-        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比列' }],
+        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比例' }],
         createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
       },
       passwordType: 'password'
