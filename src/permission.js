@@ -1,5 +1,5 @@
 import router from './router'
-// import store from './store'
+import store from './store'
 // import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
@@ -19,6 +19,19 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
+  if (to.meta.superUser) {
+    console.log(store.state.user)
+    if (!store.state.user.user.user.superUser) {
+      NProgress.done()
+      next(false)
+      return
+    }
+  }
+
+  // 过期计时器
+  if (!store.state.user.timer && whiteList.indexOf(to.path) === -1) {
+    store.commit('user/SET_OUT')
+  }
 
   if (hasToken) {
     next()

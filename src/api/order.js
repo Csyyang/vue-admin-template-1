@@ -23,3 +23,12 @@ export function deleteData(data) {
     data
   })
 }
+
+export function editList(data) {
+  return request({
+    url: '/vue-admin-template/order/editList',
+    method: 'post',
+    data
+  })
+}
+

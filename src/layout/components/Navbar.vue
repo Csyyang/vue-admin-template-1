@@ -8,7 +8,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img
-            :src="'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' + '?imageView2/1/w/80/h/80'"
+            :src="require('@/assets/avater.png')"
             class="user-avatar"
           >
           <i class="el-icon-caret-bottom" />
@@ -26,7 +26,8 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
           <el-dropdown-item @click.native="open">修改密码</el-dropdown-item>
-          <el-dropdown-item @click.native="openAddUser">添加用户</el-dropdown-item>
+          <el-dropdown-item v-if="superUser" @click.native="openAddUser">添加用户</el-dropdown-item>
+          <el-dropdown-item v-if="superUser" @click.native="$router.push('/user/list')">账号列表</el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -112,7 +113,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'superUser'
     ])
   },
   methods: {

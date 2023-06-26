@@ -58,7 +58,19 @@ export const constantRoutes = [
         name: 'Order',
         component: () => import('@/views/order/index'),
         meta: { title: '订单', icon: 'form' }
-
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/list',
+    children: [
+      {
+        path: 'list',
+        name: 'List',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户列表', icon: 'user', superUser: true }
       }
     ]
   },

@@ -6,7 +6,7 @@
           <el-radio-group v-model="radio1" @input="changInput">
             <el-radio-button label="all">所有</el-radio-button>
             <el-radio-button label="month">按月查看</el-radio-button>
-            <el-radio-button label="year">按年查看</el-radio-button>
+            <!-- <el-radio-button label="year">按年查看</el-radio-button> -->
           </el-radio-group>
 
           <el-date-picker
@@ -19,7 +19,7 @@
           />
         </div>
 
-        <el-button type="primary" @click="openDialog">新增</el-button>
+        <el-button v-if="superUser" type="primary" @click="openDialog">新增</el-button>
       </div>
     </div>
     <el-table v-loading="loading" :data="tableData" border style="width: 100%">
@@ -48,8 +48,9 @@
           {{ new Date(scope.row.createData).toLocaleDateString() }}
         </template>
       </el-table-column> -->
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column v-if="superUser" fixed="right" label="操作" width="100">
         <template slot-scope="scope">
+          <el-button type="text" size="small" @click="editItem(scope.row)">编辑</el-button>
           <el-button type="text" size="small" @click="deleteItem(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -86,18 +87,65 @@
           <el-input v-model="orderForm.divideIntoRanks" />
         </el-form-item>
 
+        <el-form-item label="日期" prop="createData">
+          <el-date-picker v-model="orderForm.createData" value-format="timestamp" style="width: 100%;" type="date" placeholder="选择日期" />
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button :loading="loadingBtn" type="primary" @click="handleOrder">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 编辑 -->
+    <el-dialog class="order-container" title="编辑" :visible.sync="dialogFormEditVisible" @close="closeEdit">
+      <el-form
+        ref="orderFormEdit"
+        :model="orderFormEdit"
+        :rules="orderRulesEdit"
+        class="order-form"
+        auto-complete="on"
+        label-position="left"
+      >
+
+        <!-- <el-form-item label="订单id" prop="order">
+          <el-input v-model="orderForm.order" />
+        </el-form-item> -->
+
+        <el-form-item label="机器编号" prop="machineNo">
+          <el-input v-model="orderFormEdit.machineNo" />
+        </el-form-item>
+
+        <el-form-item label="地理位置" prop="location">
+          <el-input v-model="orderFormEdit.location" />
+        </el-form-item>
+
+        <el-form-item label="消费金额（元）" prop="consumptionAmount">
+          <el-input v-model="orderFormEdit.consumptionAmount" />
+        </el-form-item>
+
+        <el-form-item label="分成比列（%）" prop="divideIntoRanks">
+          <el-input v-model="orderFormEdit.divideIntoRanks" />
+        </el-form-item>
+
+        <el-form-item label="日期" prop="createData">
+          <el-date-picker v-model="orderFormEdit.createData" value-format="timestamp" style="width: 100%;" type="date" placeholder="选择日期" />
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormEditVisible = false">取 消</el-button>
+        <el-button :loading="loadingBtnEdit" type="primary" @click="handleOrderEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, addList, deleteData } from '@/api/order'
+import { getList, addList, deleteData, editList } from '@/api/order'
 import currency from 'currency.js'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -108,23 +156,48 @@ export default {
       tableData: [],
       loading: false,
       loadingBtn: false,
+      loadingBtnEdit: false,
       dialogFormVisible: false,
+      dialogFormEditVisible: false,
       orderForm: {
         'order': '',
         'machineNo': '',
         'location': '',
         'consumptionAmount': '',
-        'divideIntoRanks': ''
+        'divideIntoRanks': '',
+        createData: new Date().getTime()
+      },
+      orderFormEdit: {
+        'order': '',
+        'machineNo': '',
+        'location': '',
+        'consumptionAmount': '',
+        'divideIntoRanks': '',
+        createData: 0
       },
       orderRules: {
         order: [{ required: true, trigger: 'blur', message: '请输入订单编号' }],
         machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
         location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
         consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
-        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比列' }]
+        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比列' }],
+        createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
+      },
+      orderRulesEdit: {
+        order: [{ required: true, trigger: 'blur', message: '请输入订单编号' }],
+        machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
+        location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
+        consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
+        divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比列' }],
+        createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
       },
       passwordType: 'password'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'superUser'
+    ])
   },
   created() {
     this.getData()
@@ -190,6 +263,31 @@ export default {
         }
       })
     },
+    handleOrderEdit() {
+      this.$refs.orderFormEdit.validate(valid => {
+        if (valid) {
+          this.loadingBtnEdit = true
+
+          editList(this.orderFormEdit).then(res => {
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+            this.getData()
+            this.dialogFormEditVisible = false
+          }).finally(() => {
+            this.loadingBtnEdit = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    editItem(scope) {
+      this.dialogFormEditVisible = true
+      this.orderFormEdit = JSON.parse(JSON.stringify(scope))
+    },
+
     deleteItem(scope) {
       this.loading = true
       deleteData({
@@ -207,6 +305,9 @@ export default {
     close() {
       this.$refs.orderForm.resetFields()
     },
+    closeEdit() {
+      this.$refs.orderFormEdit.resetFields()
+    },
     changInput(val) {
       if (val === 'all') {
         this.getData()
@@ -217,6 +318,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+>>>.el-date-editor.el-input {
+  width: 100% !important;
+}
+
 .order {
   padding: 15px;
 

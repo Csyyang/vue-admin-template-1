@@ -1,12 +1,14 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { getToken, setToken, removeToken, getUser } from '@/utils/auth'
+import router, { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    user: getUser(),
+    timer: null
   }
 }
 
@@ -18,6 +20,36 @@ const mutations = {
   },
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_USER: (state, user) => {
+    state.user = user
+
+    localStorage.setItem('user', JSON.stringify(user))
+  },
+  // 设置到期定时器
+  SET_OUT: (state, user) => {
+    if (state.timer) {
+      clearInterval(state.timer)
+      state.timer = null
+    }
+
+    console.log('out')
+    if (new Date().getTime() > state.user.expirationTime) {
+      router.push('/login')
+      return
+    }
+
+    // 存在过期时间，到期后自动跳转到login
+    if (state.user.expirationTime) {
+      state.timer = setInterval(() => {
+        console.log('定时器')
+        if (new Date().getTime() > state.user.expirationTime) {
+          router.push('/login')
+
+          clearInterval(state.timer)
+        }
+      }, 900000)
+    }
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -36,6 +68,8 @@ const actions = {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
+        commit('SET_USER', data)
+        commit('SET_OUT', data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -70,6 +104,7 @@ const actions = {
       logout(state.token).then(() => {
         removeToken() // must remove  token  first
         resetRouter()
+        clearInterval(state.timer)
         commit('RESET_STATE')
         resolve()
       }).catch(error => {

@@ -38,3 +38,27 @@ export function modify(data) {
     data
   })
 }
+export function modifyPassword(data) {
+  return request({
+    url: '/vue-admin-template/user/modifyPassword',
+    method: 'post',
+    data
+  })
+}
+
+export function getUserList(params) {
+  return request({
+    url: '/vue-admin-template/user/getUserList',
+    method: 'get',
+    params
+  })
+}
+
+export function deleteAccount(data) {
+  return request({
+    url: '/vue-admin-template/user/deleteAccount',
+    method: 'post',
+    data
+  })
+}
+
