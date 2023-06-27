@@ -3,7 +3,7 @@
     <div>
       <div class="header-box">
         <div class="left-box">
-          <el-radio-group style="width:200px" v-model="radio1" @input="changInput">
+          <el-radio-group v-model="radio1" @input="changInput">
             <el-radio-button label="all">所有</el-radio-button>
             <el-radio-button label="month">按月查看</el-radio-button>
             <!-- <el-radio-button label="year">按年查看</el-radio-button> -->
@@ -26,7 +26,7 @@
       <!-- <el-table-column fixed prop="order" label="订单id" /> -->
       <el-table-column prop="machineNo" label="机器编号" />
       <el-table-column prop="location" label="地理位置" />
-      <el-table-column prop="consumptionAmount" label="消费金额（元）">
+      <el-table-column prop="consumptionAmount" label="消费总额">
         <template slot-scope="scope">
           {{ outputmoney(scope.row.consumptionAmount) }}
         </template>
@@ -37,9 +37,16 @@
           {{ scope.row.divideIntoRanks }}%
         </template>
       </el-table-column>
-      <el-table-column label="金额（元）">
+
+      <el-table-column label="分成金额">
         <template slot-scope="scope">
           {{ outputmoney(currency(scope.row.consumptionAmount).multiply(scope.row.divideIntoRanks).divide(100)) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="所属月份">
+        <template slot-scope="scope">
+          {{ `${new Date(scope.row.createData).getFullYear()}/${new Date(scope.row.createData).getMonth() + 1}` }}
         </template>
       </el-table-column>
 
@@ -79,7 +86,7 @@
           <el-input v-model="orderForm.location" />
         </el-form-item>
 
-        <el-form-item label="消费金额（元）" prop="consumptionAmount">
+        <el-form-item label="消费总额" prop="consumptionAmount">
           <el-input v-model="orderForm.consumptionAmount" />
         </el-form-item>
 
@@ -121,7 +128,7 @@
           <el-input v-model="orderFormEdit.location" />
         </el-form-item>
 
-        <el-form-item label="消费金额（元）" prop="consumptionAmount">
+        <el-form-item label="消费总额" prop="consumptionAmount">
           <el-input v-model="orderFormEdit.consumptionAmount" />
         </el-form-item>
 
@@ -179,7 +186,7 @@ export default {
         order: [{ required: true, trigger: 'blur', message: '请输入订单编号' }],
         machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
         location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
-        consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
+        consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费总额' }],
         divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比例' }],
         createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
       },
@@ -187,7 +194,7 @@ export default {
         order: [{ required: true, trigger: 'blur', message: '请输入订单编号' }],
         machineNo: [{ required: true, trigger: 'blur', message: '请输入机器编号' }],
         location: [{ required: true, trigger: 'blur', message: '请输入地理位置' }],
-        consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费金额' }],
+        consumptionAmount: [{ required: true, trigger: 'blur', message: '请输入消费总额' }],
         divideIntoRanks: [{ required: true, trigger: 'blur', message: '请输入分成比例' }],
         createData: [{ required: true, trigger: 'change', message: '请选择日期' }]
       },
