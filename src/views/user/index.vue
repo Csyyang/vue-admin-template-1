@@ -4,34 +4,87 @@
       <div class="header-box">
         <div class="left-box" />
 
-        <el-button v-if="superUser" type="primary" @click="openAddUser">新增</el-button>
+        <el-button
+          v-if="superUser"
+          type="primary"
+          @click="openAddUser"
+        >新增</el-button>
 
-        <el-dialog key="register" title="添加用户" :visible.sync="dialogUserFormVisible">
+        <el-dialog
+          key="register"
+          title="添加用户"
+          :visible.sync="dialogUserFormVisible"
+        >
           <register ref="register" />
-          <div slot="footer" class="dialog-footer">
+          <div
+            slot="footer"
+            class="dialog-footer"
+          >
             <el-button @click="dialogUserFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click.native.prevent="handleUserLogin">确 定</el-button>
+            <el-button
+              type="primary"
+              @click.native.prevent="handleUserLogin"
+            >确 定</el-button>
           </div>
         </el-dialog>
       </div>
     </div>
-    <el-table v-loading="loading" :data="tableData" border style="width: 100%">
-      <el-table-column prop="username" label="账号" />
-      <el-table-column prop="password" label="密码" />
-      <el-table-column prop="ip" label="ip地址" />
-      <el-table-column prop="date" label="最后登录时间" />
-
-      <el-table-column v-if="superUser" fixed="right" label="操作" width="100">
+    <el-table
+      v-loading="loading"
+      :data="tableData"
+      border
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="username"
+        label="账号"
+      />
+      <el-table-column
+        prop="password"
+        label="密码"
+      />
+      <el-table-column
+        prop="ip"
+        label="ip地址"
+      />
+      <el-table-column label="最后登录时间">
         <template slot-scope="scope">
-          <el-button style="margin-right: 12px;" type="text" size="small" @click="editItem(scope)">编辑</el-button>
-          <el-popconfirm title="确定删除？" @onConfirm="onConfirm(scope)">
-            <el-button slot="reference" type="text" size="small">删除</el-button>
+          {{ getDate(scope.row.date, 'YYY-MM-DD HH:mm:ss') }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-if="superUser"
+        fixed="right"
+        label="操作"
+        width="100"
+      >
+        <template slot-scope="scope">
+          <el-button
+            style="margin-right: 12px;"
+            type="text"
+            size="small"
+            @click="editItem(scope)"
+          >编辑</el-button>
+          <el-popconfirm
+            title="确定删除？"
+            @onConfirm="onConfirm(scope)"
+          >
+            <el-button
+              slot="reference"
+              type="text"
+              size="small"
+            >删除</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog class="login-container" title="修改密码" :visible.sync="dialogFormVisible">
+    <el-dialog
+      class="login-container"
+      title="修改密码"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form
         ref="loginForm"
         :model="loginForm"
@@ -56,15 +109,25 @@
             auto-complete="on"
             @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
+          <span
+            class="show-pwd"
+            @click="showPwd"
+          >
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
 
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button :loading="loading" type="primary" @click.native.prevent="handleLogin">确 定</el-button>
+        <el-button
+          :loading="loading"
+          type="primary"
+          @click.native.prevent="handleLogin"
+        >确 定</el-button>
       </div>
     </el-dialog>
 
@@ -84,6 +147,7 @@ import { getUserList } from '@/api/user'
 import { mapGetters } from 'vuex'
 import { modifyPassword, deleteAccount } from '@/api/user'
 import register from '@/views/login/register.vue'
+import dayjs from 'dayjs'
 
 export default {
   components: {
@@ -120,6 +184,10 @@ export default {
   },
 
   methods: {
+    getDate(value) {
+      if (!value) return
+      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+    },
     openAddUser() {
       this.dialogUserFormVisible = true
     },
