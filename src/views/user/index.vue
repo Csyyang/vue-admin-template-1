@@ -49,7 +49,7 @@
       />
       <el-table-column label="最后登录时间">
         <template slot-scope="scope">
-          {{ getDate(scope.row.date, 'YYY-MM-DD HH:mm:ss') }}
+          {{ getDate(scope.row.date) }}
         </template>
       </el-table-column>
 
@@ -186,7 +186,7 @@ export default {
   methods: {
     getDate(value) {
       if (!value) return
-      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+      return dayjs(value).format('YYYY/MM/DD HH:mm:ss')
     },
     openAddUser() {
       this.dialogUserFormVisible = true
